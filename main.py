@@ -7,9 +7,25 @@ class Character:
     def __init__(self):
         self.health = 100
         self.health_placeholder = 100
-        self.spells = {"berserk": random.randint(18, 25),
-                       "fierce berserk": random.randint(10, 35),
-                       "light healing": random.randint(12, 28)}
+        self.func_list = [self.spell_berserk, self.spell_fierce_berserk, self.spell_light_healing]
+
+    def spell_berserk(self):
+        self.min_dmg = 18
+        self.max_dmg = 25
+
+        return random.randint(self.min_dmg, self.max_dmg)
+
+    def spell_fierce_berserk(self):
+        self.min_dmg = 10
+        self.max_dmg = 35
+
+        return random.randint(self.min_dmg, self.max_dmg)
+
+    def spell_light_healing(self):
+        self.min_heal = 12
+        self.max_heal = 30
+
+        return random.randint(self.min_heal, self.max_heal)
 
 
 class Bot(Character):
@@ -37,6 +53,7 @@ class Game:
         self.border_black = pygame.Color('black')
         self.btn_gray = pygame.Color('gray')
         self.btn_dark_gray = pygame.Color('dark gray')
+        self.btn_blue = pygame.Color('blue')
         self.health_color_player = None  # https://stackoverflow.com/questions/40750584/this-inspection-detects-instance-attribute-definition-outside-init-method
         self.health_color_bot = None
         self.spells_button = None
@@ -86,24 +103,24 @@ class Game:
         if 190+50 > mouse[0] > 190 and 5+30 > mouse[1] > 5:
             pygame.draw.rect(self.game_display, self.btn_dark_gray, (190, 5, 75, 30))
             if click[0] == 1:
-                self.bot.health = self.bot.health - self.character.spells["berserk"]
-                self.character.health = self.character.health - self.character.spells["berserk"]
+                self.bot.health = self.bot.health - self.character.spell_berserk()
+                self.character.health = self.character.health - self.character.spell_berserk()
         else:
             pygame.draw.rect(self.game_display, self.btn_gray, (190, 5, 75, 30))
         # second button
         if 270+50 > mouse[0] > 270 and 5+30 > mouse[1] > 5:
             pygame.draw.rect(self.game_display, self.btn_dark_gray, (270, 5, 75, 30))
             if click[0] == 1:
-                self.bot.health = self.bot.health - self.character.spells["fierce berserk"]
-                self.character.health = self.character.health - self.character.spells["fierce berserk"]
+                self.bot.health = self.bot.health - self.character.spell_fierce_berserk()
+                self.character.health = self.character.health - self.character.spell_fierce_berserk()
         else:
             pygame.draw.rect(self.game_display, self.btn_gray, (270, 5, 75, 30))
         # third button
         if 350+50 > mouse[0] > 350 and 5+30 > mouse[1] > 5:
             pygame.draw.rect(self.game_display, self.btn_dark_gray, (350, 5, 75, 30))
             if click[0] == 1:
-                self.character.health = self.character.health + self.character.spells["light healing"]
-                self.bot.health = self.bot.health + self.bot.spells["light healing"]
+                self.character.health = self.character.health + self.character.spell_light_healing()
+                self.bot.health = self.bot.health + self.character.spell_light_healing()
         else:
             pygame.draw.rect(self.game_display, self.btn_gray, (350, 5, 75, 30))
         # printing txt on spell_buttons
@@ -118,6 +135,19 @@ class Game:
         font = pygame.font.SysFont("arial", 13)
         text = font.render(f"Light Healing", True, (15, 5, 25))
         self.game_display.blit(text, (355, 10))
+
+    def quit_button(self):
+        click = pygame.mouse.get_pressed()
+        mouse = pygame.mouse.get_pos()
+        if 540+55 > mouse[0] > 540 and 445+30 > mouse[1] > 445:
+            pygame.draw.rect(self.game_display, self.btn_blue, (540, 445, 55, 30))
+            if click[0] == 1:
+                pygame.quit()
+                quit()
+
+        font = pygame.font.SysFont("arial", 14)
+        text = font.render(f"Quit", True, (15, 5, 25))
+        self.game_display.blit(text, (555, 450))
 
     # ESC to quit
     def handle_keyboard_input(self):
@@ -145,6 +175,7 @@ class Game:
             self.display_hp()
             self.creating_characters()
             self.spell_buttons()
+            self.quit_button()
             pygame.display.update()
             self.game_over()
 
