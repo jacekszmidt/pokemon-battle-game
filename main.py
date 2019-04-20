@@ -1,6 +1,6 @@
 import pygame
 import random
-import math
+from time import sleep
 
 
 class Character:
@@ -64,6 +64,8 @@ class Game:
             self.health_color_player = self.health_green
         elif self.character.health > 49:
             self.health_color_player = self.health_yellow
+        elif self.character.health <= 0:  # not negative values
+            self.character.health = 0
         else:
             self.health_color_player = self.health_red
 
@@ -72,8 +74,17 @@ class Game:
             self.health_color_bot = self.health_green
         elif self.bot.health > 49:
             self.health_color_bot = self.health_yellow
+        elif self.bot.health <= 0:  # not negative values
+            self.bot.health = 0
         else:
             self.health_color_bot = self.health_red
+
+    def health_bar_heal(self):
+        if self.character.health > 100:
+            self.character.health = 100
+
+        if self.bot.health > 100:
+            self.bot.health = 100
 
         pygame.draw.rect(self.game_display, self.health_color_player, [50, 5, self.character.health, 25], 0)  # printing health bar
         pygame.draw.rect(self.game_display, self.border_black, [50, 5, self.character.health_placeholder, 25], 1)  # printing border
@@ -103,16 +114,16 @@ class Game:
         if 190+50 > mouse[0] > 190 and 5+30 > mouse[1] > 5:
             pygame.draw.rect(self.game_display, self.btn_dark_gray, (190, 5, 75, 30))
             if click[0] == 1:
-                self.bot.health = self.bot.health - self.character.spell_berserk()
                 self.character.health = self.character.health - self.character.spell_berserk()
+                self.bot.health = self.bot.health - self.character.spell_berserk()
         else:
             pygame.draw.rect(self.game_display, self.btn_gray, (190, 5, 75, 30))
         # second button
         if 270+50 > mouse[0] > 270 and 5+30 > mouse[1] > 5:
             pygame.draw.rect(self.game_display, self.btn_dark_gray, (270, 5, 75, 30))
             if click[0] == 1:
-                self.bot.health = self.bot.health - self.character.spell_fierce_berserk()
                 self.character.health = self.character.health - self.character.spell_fierce_berserk()
+                self.bot.health = self.bot.health - random.choice(self.character.func_list)()
         else:
             pygame.draw.rect(self.game_display, self.btn_gray, (270, 5, 75, 30))
         # third button
@@ -149,6 +160,15 @@ class Game:
         text = font.render(f"Quit", True, (15, 5, 25))
         self.game_display.blit(text, (555, 450))
 
+    def char_names(self):
+        font = pygame.font.SysFont("arial", 14)
+        text = font.render(f"YOU", True, (15, 5, 25))
+        self.game_display.blit(text, (15, 9))
+
+        font = pygame.font.SysFont("arial", 14)
+        text = font.render(f"BOT", True, (15, 5, 25))
+        self.game_display.blit(text, (565, 9))
+
     # ESC to quit
     def handle_keyboard_input(self):
         for event in pygame.event.get():
@@ -158,13 +178,21 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.stop_game = True
 
-    def game_over(self):
-        if self.character.health <= 0 \
-                or self.bot.health <= 0:
-            self.stop_game = True
-            print("Game Over!")
-        else:
-            pass
+    def draw_game_over(self):
+        if self.character.health <= 0:
+            self.game_display.fill(self.bg_color)
+            font = pygame.font.SysFont('Verdana', 72)
+            text = font.render("You Lost!", True, (255, 255, 0))
+            self.game_display.blit(text, (int(self.display_width/2) - text.get_width() // 2, (int(self.display_height/2) - text.get_height() // 2)))
+            self.quit_button()
+            pygame.display.update()
+        elif self.bot.health <= 0:
+            self.game_display.fill(self.bg_color)
+            font = pygame.font.SysFont('Verdana', 72)
+            text = font.render("You win!", True, (255, 255, 0))
+            self.game_display.blit(text, (int(self.display_width/2) - text.get_width() // 2, (int(self.display_height/2) - text.get_height() // 2)))
+            self.quit_button()
+            pygame.display.update()
 
     def game_loop(self):
         while not self.stop_game:
@@ -172,12 +200,14 @@ class Game:
             self.clock.tick(self.fps_number)
             self.handle_keyboard_input()
             self.health_bar()
+            self.health_bar_heal()
             self.display_hp()
+            self.char_names()
             self.creating_characters()
             self.spell_buttons()
             self.quit_button()
             pygame.display.update()
-            self.game_over()
+            self.draw_game_over()
 
 
 Game().game_loop()
