@@ -147,6 +147,7 @@ class Game:
         text = font.render(f"Light Healing", True, (15, 5, 25))
         self.game_display.blit(text, (355, 10))
 
+    #  quit button
     def quit_button(self):
         click = pygame.mouse.get_pressed()
         mouse = pygame.mouse.get_pos()
