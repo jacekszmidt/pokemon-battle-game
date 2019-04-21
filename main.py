@@ -94,9 +94,9 @@ class Game:
     def display_hp(self):
         font = pygame.font.SysFont("arial", 14)
         text = font.render(f"{self.character.health} / 100", True, (15, 5, 25))
-        self.game_display.blit(text, (80, 9))
+        self.game_display.blit(text, (75, 9))
         text = font.render(f"{self.bot.health} / 100", True, (15, 5, 25))
-        self.game_display.blit(text, (490, 9))
+        self.game_display.blit(text, (485, 9))
 
     def creating_characters(self):
         # creating Character image
@@ -111,41 +111,45 @@ class Game:
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         # first button
-        if 190+50 > mouse[0] > 190 and 5+30 > mouse[1] > 5:
-            pygame.draw.rect(self.game_display, self.btn_dark_gray, (190, 5, 75, 30))
+        if 160+85 > mouse[0] > 160 and 5+30 > mouse[1] > 5:
+            pygame.draw.rect(self.game_display, self.btn_dark_gray, (160, 5, 85, 30))
             if click[0] == 1:
                 self.character.health = self.character.health - self.character.spell_berserk()
                 self.bot.health = self.bot.health - self.character.spell_berserk()
         else:
-            pygame.draw.rect(self.game_display, self.btn_gray, (190, 5, 75, 30))
+            pygame.draw.rect(self.game_display, self.btn_gray, (160, 5, 85, 30))
+
         # second button
-        if 270+50 > mouse[0] > 270 and 5+30 > mouse[1] > 5:
-            pygame.draw.rect(self.game_display, self.btn_dark_gray, (270, 5, 75, 30))
+        if 265+85 > mouse[0] > 265 and 5+30 > mouse[1] > 5:
+            pygame.draw.rect(self.game_display, self.btn_dark_gray, (265, 5, 85, 30))
             if click[0] == 1:
                 self.character.health = self.character.health - self.character.spell_fierce_berserk()
                 self.bot.health = self.bot.health - random.choice(self.character.func_list)()
         else:
-            pygame.draw.rect(self.game_display, self.btn_gray, (270, 5, 75, 30))
+            pygame.draw.rect(self.game_display, self.btn_gray, (265, 5, 85, 30))
         # third button
-        if 350+50 > mouse[0] > 350 and 5+30 > mouse[1] > 5:
-            pygame.draw.rect(self.game_display, self.btn_dark_gray, (350, 5, 75, 30))
+        if 370+85 > mouse[0] > 370 and 5+30 > mouse[1] > 5:
+            pygame.draw.rect(self.game_display, self.btn_dark_gray, (370, 5, 85, 30))
             if click[0] == 1:
                 self.character.health = self.character.health + self.character.spell_light_healing()
                 self.bot.health = self.bot.health + self.character.spell_light_healing()
         else:
-            pygame.draw.rect(self.game_display, self.btn_gray, (350, 5, 75, 30))
+            pygame.draw.rect(self.game_display, self.btn_gray, (370, 5, 85, 30))
         # printing txt on spell_buttons
-        font = pygame.font.SysFont("arial", 13)
+        font = pygame.font.SysFont("arial", 11)
         text = font.render(f"Berserk", True, (15, 5, 25))
-        self.game_display.blit(text, (210, 10))
+        text_rect = text.get_rect(center=(160 + (85 / 2), (5 + (30 / 2))))
+        self.game_display.blit(text, text_rect)
 
-        font = pygame.font.SysFont("arial", 13)
+        font = pygame.font.SysFont("arial", 11)
         text = font.render(f"Fierce Berserk", True, (15, 5, 25))
-        self.game_display.blit(text, (272, 10))
+        text_rect = text.get_rect(center=(265 + (85 / 2), (5 + (30 / 2))))
+        self.game_display.blit(text, text_rect)
 
-        font = pygame.font.SysFont("arial", 13)
+        font = pygame.font.SysFont("arial", 11)
         text = font.render(f"Light Healing", True, (15, 5, 25))
-        self.game_display.blit(text, (355, 10))
+        text_rect = text.get_rect(center=(370 + (85 / 2), (5 + (30 / 2))))
+        self.game_display.blit(text, text_rect)
 
     #  quit button
     def quit_button(self):
@@ -156,10 +160,30 @@ class Game:
             if click[0] == 1:
                 pygame.quit()
                 quit()
+        else:
+                pygame.draw.rect(self.game_display, self.btn_gray, (540, 445, 55, 30))
 
-        font = pygame.font.SysFont("arial", 14)
+        font = pygame.font.SysFont("arial", 11)
         text = font.render(f"Quit", True, (15, 5, 25))
-        self.game_display.blit(text, (555, 450))
+        text_rect = text.get_rect(center=(540 + (55 / 2), (445 + (30 / 2))))
+        self.game_display.blit(text, text_rect)
+
+    def try_again_button(self):
+        click = pygame.mouse.get_pressed()
+        mouse = pygame.mouse.get_pos()
+        if 540+55 > mouse[0] > 540 and 405+30 > mouse[1] > 405:
+            pygame.draw.rect(self.game_display, self.btn_blue, (540, 405, 55, 30))
+            if click[0] == 1:
+                self.game_display.fill(self.bg_color)
+                self.character.health = 100
+                self.bot.health = 100
+        else:
+                pygame.draw.rect(self.game_display, self.btn_gray, (540, 405, 55, 30))
+
+        font = pygame.font.SysFont("arial", 11)
+        text = font.render(f"Try Again", True, (15, 5, 25))
+        text_rect = text.get_rect(center=(540 + (55 / 2), (405 + (30 / 2))))
+        self.game_display.blit(text, text_rect)
 
     def char_names(self):
         font = pygame.font.SysFont("arial", 14)
@@ -183,17 +207,19 @@ class Game:
         if self.character.health <= 0:
             self.game_display.fill(self.bg_color)
             font = pygame.font.SysFont('Verdana', 72)
-            text = font.render("You Lost!", True, (255, 255, 0))
+            text = font.render("You Lost!", True, (0, 0, 255))
             self.game_display.blit(text, (int(self.display_width/2) - text.get_width() // 2, (int(self.display_height/2) - text.get_height() // 2)))
+            self.try_again_button()
             self.quit_button()
             pygame.display.update()
         elif self.bot.health <= 0:
-            self.game_display.fill(self.bg_color)
-            font = pygame.font.SysFont('Verdana', 72)
-            text = font.render("You win!", True, (255, 255, 0))
-            self.game_display.blit(text, (int(self.display_width/2) - text.get_width() // 2, (int(self.display_height/2) - text.get_height() // 2)))
-            self.quit_button()
-            pygame.display.update()
+                self.game_display.fill(self.bg_color)
+                font = pygame.font.SysFont('Verdana', 72)
+                text = font.render("You win!", True, (0, 0, 255))
+                self.game_display.blit(text, (int(self.display_width/2) - text.get_width() // 2, (int(self.display_height/2) - text.get_height() // 2)))
+                self.try_again_button()
+                self.quit_button()
+                pygame.display.update()
 
     def game_loop(self):
         while not self.stop_game:
